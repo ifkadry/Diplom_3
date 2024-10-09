@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class ConfigFileReader {
-    private final Properties properties;
+    private Properties properties;
 
     public ConfigFileReader() {
         BufferedReader reader;
@@ -15,33 +15,35 @@ public class ConfigFileReader {
         try {
             reader = new BufferedReader(new FileReader(propertyFilePath));
             properties = new Properties();
-            try {
-                properties.load(reader);
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            properties.load(reader);
+            reader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException("Configuration.properties not found at " + propertyFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public String getApplicationUrl() {
         String url = properties.getProperty("test.application.url");
-        if(url != null) return url;
+        if (url != null) return url;
         else throw new RuntimeException("url not specified in the Configuration.properties file.");
     }
 
     public String getTestUserEmail() {
         String email = properties.getProperty("test.user.email");
-        if(email != null) return email;
+        if (email != null) return email;
         else throw new RuntimeException("email not specified in the Configuration.properties file.");
     }
 
     public String getTestUserPassword() {
         String password = properties.getProperty("test.user.password");
-        if(password != null) return password;
+        if (password != null) return password;
         else throw new RuntimeException("password not specified in the Configuration.properties file.");
+    }
+
+    public String getProperty(String key) {
+        return properties.getProperty(key);
     }
 }

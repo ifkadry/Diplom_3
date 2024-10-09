@@ -9,11 +9,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import ru.practicum.api_steps.UsersSteps;
+import ru.practicum.apiSteps.UsersSteps;
 import ru.practicum.constants.Browser;
-import ru.practicum.page_objects.AccountPage;
-import ru.practicum.page_objects.LoginPage;
-import ru.practicum.page_objects.MainPage;
+import ru.practicum.pageObjects.AccountPage;
+import ru.practicum.pageObjects.LoginPage;
+import ru.practicum.pageObjects.MainPage;
 import ru.practicum.pojos.SignInRequest;
 import ru.practicum.pojos.SuccessSignInSignUpResponse;
 import ru.practicum.pojos.UserRequest;
@@ -34,14 +34,6 @@ public class GoToAccountTest {
 
     public GoToAccountTest(Browser browserEnum) {
         this.browserEnum = browserEnum;
-    }
-
-    @Parameterized.Parameters
-    public static Object[][] getData() {
-        return new Object[][]{
-                {Browser.CHROME},
-                {Browser.YANDEX}
-        };
     }
 
     @Before

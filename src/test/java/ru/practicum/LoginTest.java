@@ -6,9 +6,9 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import ru.practicum.api_steps.UsersSteps;
+import ru.practicum.apiSteps.UsersSteps;
 import ru.practicum.constants.Browser;
-import ru.practicum.page_objects.*;
+import ru.practicum.pageObjects.*;
 import ru.practicum.pojos.SignInRequest;
 import ru.practicum.pojos.SuccessSignInSignUpResponse;
 import ru.practicum.pojos.UserRequest;
@@ -32,14 +32,6 @@ public class LoginTest {
 
     public LoginTest(Browser browserEnum) {
         this.browserEnum = browserEnum;
-    }
-
-    @Parameterized.Parameters
-    public static Object[][] getData() {
-        return new Object[][]{
-                {Browser.CHROME},
-                {Browser.YANDEX}
-        };
     }
 
     @Before
