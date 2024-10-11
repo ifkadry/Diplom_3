@@ -3,39 +3,37 @@ package ru.practicum;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.openqa.selenium.WebDriver;
-import ru.practicum.apiSteps.UsersSteps;
-import ru.practicum.constants.Browser;
-import ru.practicum.pageObjects.*;
+import ru.practicum.api.UsersSteps;
+import ru.practicum.utils.BrowserConfig;
+import ru.practicum.pageobjects.*;
 import ru.practicum.pojos.SignInRequest;
 import ru.practicum.pojos.SuccessSignInSignUpResponse;
 import ru.practicum.pojos.UserRequest;
 import ru.practicum.utils.ConfigFileReader;
-import ru.practicum.utils.DriverInitializer;
 import ru.practicum.utils.UsersUtils;
+import ru.practicum.api.UsersSteps;
+import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.time.Duration;
 
-@RunWith(Parameterized.class)
-public class LoginTest {
-    WebDriver driver;
-    MainPage mainPage;
-    LoginPage loginPage;
-    Browser browserEnum;
-    ConfigFileReader configFileReader = new ConfigFileReader();
 
-    UserRequest testUser;
-    String accessToken;
-    SignInRequest signInRequest;
 
-    public LoginTest(Browser browserEnum) {
-        this.browserEnum = browserEnum;
-    }
+
+public class LoginTest extends BrowserConfig {
+    private MainPage mainPage;
+    private LoginPage loginPage;
+    private ConfigFileReader configFileReader = new ConfigFileReader();
+
+    private UserRequest testUser;
+    private String accessToken;
+    private SignInRequest signInRequest;
 
     @Before
     public void init() {
+        super.configure();
         testUser = UsersUtils.getUniqueUser();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
@@ -48,15 +46,12 @@ public class LoginTest {
 
         signInRequest = new SignInRequest(testUser.getEmail(), testUser.getPassword());
 
-        this.driver = DriverInitializer.getDriver(browserEnum);
-
         driver.get(configFileReader.getApplicationUrl());
         this.mainPage = new MainPage(driver);
         this.loginPage = new LoginPage(driver);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
-
 
     @After
     public void closeDriver() {
@@ -73,7 +68,7 @@ public class LoginTest {
         AccountPage accountPage = new AccountPage(driver);
 
         boolean displayed = accountPage.getProfileButton().isDisplayed();
-        Assert.assertTrue("Вход в личный кабинет не выполнен", displayed);
+        assertTrue("Вход в личный кабинет не выполнен", displayed);
     }
 
     @Test
@@ -85,7 +80,7 @@ public class LoginTest {
         AccountPage accountPage = new AccountPage(driver);
 
         boolean displayed = accountPage.getProfileButton().isDisplayed();
-        Assert.assertTrue("Вход в личный кабинет не выполнен", displayed);
+        assertTrue("Вход в личный кабинет не выполнен", displayed);
     }
 
     @Test
@@ -100,7 +95,7 @@ public class LoginTest {
         AccountPage accountPage = new AccountPage(driver);
 
         boolean displayed = accountPage.getProfileButton().isDisplayed();
-        Assert.assertTrue("Вход в личный кабинет не выполнен", displayed);
+        assertTrue("Вход в личный кабинет не выполнен", displayed);
     }
 
     @Test
@@ -115,6 +110,6 @@ public class LoginTest {
         AccountPage accountPage = new AccountPage(driver);
 
         boolean displayed = accountPage.getProfileButton().isDisplayed();
-        Assert.assertTrue("Вход в личный кабинет не выполнен", displayed);
+        assertTrue("Вход в личный кабинет не выполнен", displayed);
     }
 }

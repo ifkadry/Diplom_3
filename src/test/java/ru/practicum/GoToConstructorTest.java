@@ -6,43 +6,34 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import ru.practicum.apiSteps.UsersSteps;
-import ru.practicum.constants.Browser;
-import ru.practicum.pageObjects.AccountPage;
-import ru.practicum.pageObjects.LoginPage;
-import ru.practicum.pageObjects.MainPage;
+import ru.practicum.api.UsersSteps;
+import ru.practicum.pageobjects.AccountPage;
+import ru.practicum.pageobjects.LoginPage;
+import ru.practicum.pageobjects.MainPage;
 import ru.practicum.pojos.SignInRequest;
 import ru.practicum.pojos.SuccessSignInSignUpResponse;
 import ru.practicum.pojos.UserRequest;
 import ru.practicum.utils.ConfigFileReader;
-import ru.practicum.utils.DriverInitializer;
+import ru.practicum.utils.BrowserConfig;
 import ru.practicum.utils.UsersUtils;
 
 import java.time.Duration;
 
-@RunWith(Parameterized.class)
-public class GoToConstructorTest {
-    WebDriver driver;
-    MainPage mainPage;
-    LoginPage loginPage;
-    AccountPage accountPage;
-    Browser browserEnum;
-
-    public GoToConstructorTest(Browser browserEnum) {
-        this.browserEnum = browserEnum;
-    }
+public class GoToConstructorTest extends BrowserConfig {
+    private WebDriver driver;
+    private MainPage mainPage;
+    private LoginPage loginPage;
+    private AccountPage accountPage;
 
     @Before
     public void init() {
-        driver = DriverInitializer.getDriver(browserEnum);
+        configure();
+        driver.get(new ConfigFileReader().getApplicationUrl());
 
         mainPage = new MainPage(driver);
         loginPage = new LoginPage(driver);
         accountPage = new AccountPage(driver);
-        driver.get(new ConfigFileReader().getApplicationUrl());
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
@@ -70,7 +61,7 @@ public class GoToConstructorTest {
         accountPage.clickGoToConstructorButton();
 
         boolean displayed = mainPage.getBurgerConstructorHeader().isDisplayed();
-        Assert.assertTrue("Конструктор не открыт",displayed);
+        Assert.assertTrue("Конструктор не открыт", displayed);
 
         UsersSteps.deleteUser(signUpResponse.getAccessToken());
     }

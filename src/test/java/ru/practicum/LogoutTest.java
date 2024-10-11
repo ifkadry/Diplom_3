@@ -6,37 +6,28 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import ru.practicum.apiSteps.UsersSteps;
-import ru.practicum.constants.Browser;
-import ru.practicum.pageObjects.AccountPage;
-import ru.practicum.pageObjects.LoginPage;
-import ru.practicum.pageObjects.MainPage;
+import ru.practicum.api.UsersSteps;
+import ru.practicum.pageobjects.AccountPage;
+import ru.practicum.pageobjects.LoginPage;
+import ru.practicum.pageobjects.MainPage;
 import ru.practicum.pojos.SignInRequest;
 import ru.practicum.pojos.SuccessSignInSignUpResponse;
 import ru.practicum.pojos.UserRequest;
+import ru.practicum.utils.BrowserConfig;
 import ru.practicum.utils.ConfigFileReader;
-import ru.practicum.utils.DriverInitializer;
 import ru.practicum.utils.UsersUtils;
 
 import java.time.Duration;
 
-@RunWith(Parameterized.class)
-public class LogoutTest {
-    WebDriver driver;
-    MainPage mainPage;
-    LoginPage loginPage;
-    AccountPage accountPage;
-    Browser browserEnum;
-    UserRequest testUser;
-    String accessToken;
-    SignInRequest signInRequest;
-
-    public LogoutTest(Browser browserEnum) {
-        this.browserEnum = browserEnum;
-    }
+public class LogoutTest extends BrowserConfig {
+    private WebDriver driver;
+    private MainPage mainPage;
+    private LoginPage loginPage;
+    private AccountPage accountPage;
+    private UserRequest testUser;
+    private String accessToken;
+    private SignInRequest signInRequest;
 
     @Before
     public void init() {
@@ -51,7 +42,7 @@ public class LogoutTest {
         accessToken = signUpResponse.getAccessToken();
         signInRequest = new SignInRequest(testUser.getEmail(), testUser.getPassword());
 
-        driver = DriverInitializer.getDriver(browserEnum);
+
         mainPage = new MainPage(driver);
         loginPage = new LoginPage(driver);
         accountPage = new AccountPage(driver);
@@ -62,7 +53,9 @@ public class LogoutTest {
 
     @After
     public void shutdown() {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
     @Test

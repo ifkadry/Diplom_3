@@ -7,37 +7,29 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import ru.practicum.apiSteps.UsersSteps;
-import ru.practicum.constants.Browser;
-import ru.practicum.pageObjects.LoginPage;
-import ru.practicum.pageObjects.MainPage;
-import ru.practicum.pageObjects.SignUpPage;
+import ru.practicum.api.UsersSteps;
+import ru.practicum.pageobjects.LoginPage;
+import ru.practicum.pageobjects.MainPage;
+import ru.practicum.pageobjects.SignUpPage;
 import ru.practicum.pojos.SignInRequest;
 import ru.practicum.pojos.SuccessSignInSignUpResponse;
+import ru.practicum.utils.BrowserConfig;
 import ru.practicum.utils.ConfigFileReader;
-import ru.practicum.utils.DriverInitializer;
 
 import java.time.Duration;
 
-@RunWith(Parameterized.class)
-public class SignUpTest {
-    WebDriver driver;
-    MainPage mainPage;
-    LoginPage loginPage;
-    SignUpPage signUpPage;
-    Browser browserEnum;
-    public SignUpTest(Browser browserEnum) {
-        this.browserEnum = browserEnum;
-    }
+public class SignUpTest extends BrowserConfig {
+    private WebDriver driver;
+    private MainPage mainPage;
+    private LoginPage loginPage;
+    private SignUpPage signUpPage;
 
     @Before
     public void init() {
-        driver = DriverInitializer.getDriver(browserEnum);
+        configure();
         driver.get(new ConfigFileReader().getApplicationUrl());
-        this.mainPage = new MainPage(driver);
+        mainPage = new MainPage(driver);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
@@ -67,12 +59,12 @@ public class SignUpTest {
         Assert.assertTrue("Регистрация не выполнена", displayed);
 
         Response response = UsersSteps.signInWithSignInRequest(new SignInRequest(email, password));
-
         String accessToken = response
                 .then()
                 .statusCode(200)
                 .extract()
-                .as(SuccessSignInSignUpResponse.class).getAccessToken();
+                .as(SuccessSignInSignUpResponse.class)
+                .getAccessToken();
 
         UsersSteps.deleteUser(accessToken);
     }
@@ -94,15 +86,14 @@ public class SignUpTest {
         signUpPage.clickSignUpButton();
 
         boolean displayed = signUpPage.getPasswordErrorMessage().isDisplayed();
+        Assert.assertTrue("Не выведена ошибка о некорректном пароле", displayed);
 
-        if (!displayed) {
+        if (displayed) {
             Response response = UsersSteps.signInWithSignInRequest(new SignInRequest(email, password));
-
             if (response.getStatusCode() == 200) {
                 String accessToken = response.then().extract().as(SuccessSignInSignUpResponse.class).getAccessToken();
                 UsersSteps.deleteUser(accessToken);
             }
         }
-        Assert.assertTrue("Не выведена ошибка о некорректном пароле", displayed);
     }
 }

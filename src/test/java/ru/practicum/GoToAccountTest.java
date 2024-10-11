@@ -6,39 +6,32 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import ru.practicum.apiSteps.UsersSteps;
-import ru.practicum.constants.Browser;
-import ru.practicum.pageObjects.AccountPage;
-import ru.practicum.pageObjects.LoginPage;
-import ru.practicum.pageObjects.MainPage;
+import ru.practicum.utils.BrowserConfig;
+import ru.practicum.utils.ConfigFileReader;
+import ru.practicum.utils.UsersUtils;
 import ru.practicum.pojos.SignInRequest;
 import ru.practicum.pojos.SuccessSignInSignUpResponse;
 import ru.practicum.pojos.UserRequest;
-import ru.practicum.utils.ConfigFileReader;
-import ru.practicum.utils.DriverInitializer;
-import ru.practicum.utils.UsersUtils;
+import ru.practicum.pageobjects.AccountPage;
+import ru.practicum.pageobjects.LoginPage;
+import ru.practicum.pageobjects.MainPage;
+import ru.practicum.api.UsersSteps;
 
 import java.time.Duration;
 
-@RunWith(Parameterized.class)
-public class GoToAccountTest {
-    WebDriver driver;
-    MainPage mainPage;
-    LoginPage loginPage;
-    AccountPage accountPage;
-    Browser browserEnum;
-    ConfigFileReader configFileReader = new ConfigFileReader();
-
-    public GoToAccountTest(Browser browserEnum) {
-        this.browserEnum = browserEnum;
-    }
+public class GoToAccountTest extends BrowserConfig {
+    private WebDriver driver;
+    private MainPage mainPage;
+    private LoginPage loginPage;
+    private AccountPage accountPage;
+    private ConfigFileReader configFileReader = new ConfigFileReader();
+    private BrowserConfig browserConfig = new BrowserConfig();
 
     @Before
     public void init() {
-        driver = DriverInitializer.getDriver(browserEnum);
+        browserConfig.configure();
+        driver = browserConfig.driver;
         driver.get(configFileReader.getApplicationUrl());
         mainPage = new MainPage(driver);
         accountPage = new AccountPage(driver);

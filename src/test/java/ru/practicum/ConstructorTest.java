@@ -6,24 +6,25 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import ru.practicum.constants.Browser;
-import ru.practicum.pageObjects.MainPage;
+import ru.practicum.pageobjects.MainPage;
+import ru.practicum.utils.BrowserConfig;
 import ru.practicum.utils.ConfigFileReader;
-import ru.practicum.utils.DriverInitializer;
 
 import java.time.Duration;
 
-public class ConstructorTest {
-    WebDriver driver;
-    MainPage mainPage;
-    ConfigFileReader configFileReader = new ConfigFileReader();
-    Browser browserEnum;
+public class ConstructorTest extends BrowserConfig {
+    private WebDriver driver;
+    private MainPage mainPage;
+    private ConfigFileReader configFileReader = new ConfigFileReader();
+    private BrowserConfig browserConfig;
 
     @Before
     public void init() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-        browserEnum = getBrowserFromConfig();
-        this.driver = DriverInitializer.getDriver(browserEnum);
+
+
+        browserConfig = new BrowserConfig();
+        browserConfig.configure();
         driver.get(configFileReader.getApplicationUrl());
         this.mainPage = new MainPage(driver);
         driver.manage().window().maximize();
@@ -32,7 +33,9 @@ public class ConstructorTest {
 
     @After
     public void shutdown() {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
     @Test
@@ -55,10 +58,5 @@ public class ConstructorTest {
         mainPage.clickOnFillingsSectionButton();
         boolean isSelected = mainPage.isSectionButtonSelected(mainPage.getFillingsSectionButton());
         Assert.assertTrue("Переход к разделу Начинки не выполнен", isSelected);
-    }
-
-    private Browser getBrowserFromConfig() {
-        String browserName = configFileReader.getProperty("test.browser");
-        return Browser.valueOf(browserName.toUpperCase());
     }
 }
